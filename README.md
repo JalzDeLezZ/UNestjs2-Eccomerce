@@ -13,3 +13,9 @@
 docker-compose up -d
 ```
 6. Levantar: ```yarn start:dev``` 
+
+
+### Utils
+```
+nest g mo commond
+```
