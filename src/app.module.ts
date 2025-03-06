@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
 import { CommondModule } from './commond/commond.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { CommondModule } from './commond/commond.module';
       entities: [],
     }),
     ProductsModule,
-    CommondModule
+    CommondModule,
+    SeedModule
   ],
 })
 export class AppModule {}
