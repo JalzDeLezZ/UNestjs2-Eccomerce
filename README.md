@@ -22,4 +22,5 @@ docker-compose up -d
 ```
 nest g mo commond
 nest g res seed --no-spec
+nest g res auth --no-spec
 ```
