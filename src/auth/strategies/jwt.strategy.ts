@@ -18,20 +18,20 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: configService.get('JWT_SECRET'),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     });
+    console.log('JwtStrategy initialized');
   }
 
   async validate(payload: JwtPayloadX): Promise<User> {
-    const { email } = payload;
+    const { id } = payload;
 
-    const user = await this.userRepository.findOneBy({ email });
+    const user = await this.userRepository.findOneBy({ id });
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid token');
-    }
+    if (!user) throw new UnauthorizedException('Token not valid');
 
-    if (!user.isActive) {
-      throw new UnauthorizedException('User is inactive');
-    }
+    if (!user.isActive)
+      throw new UnauthorizedException('User is inactive, talk with an admin');
+
+    console.log({ user });
 
     return user;
   }

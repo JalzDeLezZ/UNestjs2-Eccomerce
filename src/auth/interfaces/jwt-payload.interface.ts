@@ -1,3 +1,3 @@
 export interface JwtPayloadX {
-  email: string;
+  id: string;
 }
