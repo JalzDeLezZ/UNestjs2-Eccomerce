@@ -19,5 +19,6 @@
     "peacock.color": "#f9e64f",
     "files.exclude": {
         "**/node_modules": true
-    }
+    },
+    "material-icon-theme.activeIconPack": "nest",
 }
