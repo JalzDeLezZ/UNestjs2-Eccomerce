@@ -11,10 +11,12 @@ import {
 import { AuthService } from './auth.service';
 import { CreateUserDTO, LoginUserDTO } from './dto';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser, RawHeaders } from './decorators';
+import { MyAuth, GetUser, RawHeaders } from './decorators';
 import { User } from './entities/user.entity';
 import { IncomingHttpHeaders } from 'http';
 import { UserRoleGuard } from './guards/user-role/user-role.guard';
+import { RoleProtected } from './decorators/role-protected.decorator';
+import { ValidRoles } from './interfaces';
 
 @Controller('auth')
 export class AuthController {
@@ -47,13 +49,23 @@ export class AuthController {
   }
 
   @Get('private2')
-  @SetMetadata('roles', ['admin', 'super-user']) //? 3. some method to set metadata
-  @UseGuards(AuthGuard(), UserRoleGuard) 
+  //!X @SetMetadata('roles', ['admin', 'super-user']) //? 3. some method to set metadata
+  @RoleProtected(ValidRoles.superUser, ValidRoles.admin)
+  @UseGuards(AuthGuard(), UserRoleGuard)
   privateRoute2(@GetUser() user2: User) {
     return {
       ok: true,
       message: 'Hello world',
       user: user2,
+    };
+  }
+
+  @Get('private3')
+  @MyAuth(ValidRoles.superUser, ValidRoles.admin)
+  privateRoute3(@GetUser() user3: User) {
+    return {
+      ok: true,
+      user: user3,
     };
   }
 }

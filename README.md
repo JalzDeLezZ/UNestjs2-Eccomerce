@@ -25,4 +25,5 @@ nest g mo commond
 nest g res seed --no-spec
 nest g res auth --no-spec
 nest g gu auth/guards/userRole --no-spec
+nest g d auth/decorators/roleProtected --no-spec
 ```
