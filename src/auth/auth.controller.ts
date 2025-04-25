@@ -16,7 +16,7 @@ import { User } from './entities/user.entity';
 import { IncomingHttpHeaders } from 'http';
 import { UserRoleGuard } from './guards/user-role/user-role.guard';
 import { RoleProtected } from './decorators/role-protected.decorator';
-import { ValidRoles } from './interfaces';
+import { IValidRoles } from './interfaces';
 
 @Controller('auth')
 export class AuthController {
@@ -50,7 +50,7 @@ export class AuthController {
 
   @Get('private2')
   //!X @SetMetadata('roles', ['admin', 'super-user']) //? 3. some method to set metadata
-  @RoleProtected(ValidRoles.superUser, ValidRoles.admin)
+  @RoleProtected(IValidRoles.superUser, IValidRoles.admin)
   @UseGuards(AuthGuard(), UserRoleGuard)
   privateRoute2(@GetUser() user2: User) {
     return {
@@ -61,7 +61,7 @@ export class AuthController {
   }
 
   @Get('private3')
-  @MyAuth(ValidRoles.superUser, ValidRoles.admin)
+  @MyAuth(IValidRoles.superUser, IValidRoles.admin)
   privateRoute3(@GetUser() user3: User) {
     return {
       ok: true,

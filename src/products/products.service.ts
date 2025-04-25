@@ -13,6 +13,7 @@ import { DataSource, Repository } from 'typeorm';
 import { PaginationDto } from 'src/commond/dto/pagination.dto';
 import { validate as isUUID } from 'uuid';
 import { ProductImage } from './entities';
+import { User } from '../auth/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -28,7 +29,7 @@ export class ProductsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user: User) {
     try {
       const { images = [], ...productDetails } = createProductDto;
 
@@ -37,6 +38,7 @@ export class ProductsService {
         images: images.map((image_url) =>
           this.productImageRepository.create({ url: image_url }),
         ),
+        user,
       });
       await this.productRepository.save(product);
       return {
@@ -101,7 +103,7 @@ export class ProductsService {
     };
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto, user: User) {
     const { images, ...toUpdate } = updateProductDto;
     const product = await this.productRepository.preload({
       id,
@@ -122,19 +124,14 @@ export class ProductsService {
         product.images = images.map((image_url) =>
           this.productImageRepository.create({ url: image_url }),
         );
-      } /* else {
-        product.images = await this.productImageRepository.findBy({
-          product: { id },
-        });
-      } */
+      }
+      product.user = user;
 
       await queryRunner.manager.save(product);
       await queryRunner.commitTransaction();
       await queryRunner.release();
 
-      //return product;
       return this.findOnePlain(id);
-      //return await this.productRepository.save(product);
     } catch (error) {
       await queryRunner.rollbackTransaction();
       await queryRunner.release();
@@ -150,7 +147,6 @@ export class ProductsService {
     }
     await this.productRepository.remove(product);
   }
-  
 
   private handleDBException(error: any) {
     if (error.code === '23505') {
@@ -172,5 +168,4 @@ export class ProductsService {
       throw new InternalServerErrorException('Error deleting products');
     }
   }
-
 }

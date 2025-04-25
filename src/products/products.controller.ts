@@ -13,8 +13,9 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from 'src/commond/dto/pagination.dto';
-import { MyAuth } from 'src/auth/decorators';
-import { ValidRoles } from 'src/auth/interfaces';
+import { GetUser, MyAuth } from 'src/auth/decorators';
+import { IValidRoles } from 'src/auth/interfaces';
+import { User } from 'src/auth/entities/user.entity';
 
 @Controller('products')
 //@MyAuth() //! Only active if we want to protect all the routes in this controller
@@ -22,9 +23,12 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  @MyAuth(ValidRoles.admin)
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto);
+  @MyAuth(IValidRoles.admin)
+  create(
+    @Body() createProductDto: CreateProductDto,
+    @GetUser() user: User
+  ) {
+    return this.productsService.create(createProductDto, user);
   }
 
   @Get()
@@ -38,16 +42,17 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  @MyAuth(ValidRoles.admin)
+  @MyAuth(IValidRoles.admin)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateProductDto: UpdateProductDto,
+    @GetUser() user: User
   ) {
-    return this.productsService.update(id, updateProductDto);
+    return this.productsService.update(id, updateProductDto, user);
   }
 
   @Delete(':id')
-  @MyAuth(ValidRoles.admin)
+  @MyAuth(IValidRoles.admin)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.remove(id);
   }

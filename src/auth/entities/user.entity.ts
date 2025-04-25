@@ -1,10 +1,12 @@
 //? La entidad enlasa la base de datos con el modelo de datos y la lógica de negocio
 //? La entidad es la representación de un objeto en la base de datos
+import { Product } from 'src/products/entities';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -29,6 +31,9 @@ export class User {
 
   @Column('text', { array: true, default: ['user'] })
   roles: string[];
+
+  @OneToMany(() => Product, (product) => product.user)
+  product: Product;
 
   @BeforeInsert()
   checkFieldsBeforeInsert() {
