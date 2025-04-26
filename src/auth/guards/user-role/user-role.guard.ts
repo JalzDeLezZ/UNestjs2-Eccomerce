@@ -22,8 +22,7 @@ export class UserRoleGuard implements CanActivate {
       context.getHandler(),
     );
 
-    console.log({ validRoles });
-    if (!validRoles && validRoles.length === 0) {
+    if (!validRoles || validRoles.length === 0) {
       return true; // No roles defined, allow access
     }
 
