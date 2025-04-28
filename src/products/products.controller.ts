@@ -16,12 +16,18 @@ import { PaginationDto } from 'src/commond/dto/pagination.dto';
 import { GetUser, MyAuth } from 'src/auth/decorators';
 import { IValidRoles } from 'src/auth/interfaces';
 import { User } from 'src/auth/entities/user.entity';
+import { ApiResponse } from '@nestjs/swagger';
+import { Product } from './entities';
 
 @Controller('products')
 //@MyAuth() //! Only active if we want to protect all the routes in this controller
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
+  @ApiResponse({ status: 200, description: 'Product created', type: Product })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
   @Post()
   @MyAuth(IValidRoles.admin)
   create(
